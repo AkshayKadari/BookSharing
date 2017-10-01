@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:text="POST BOOK"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+
+
+    <EditText
+        android:id="@+id/postBookName"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:hint="Name"
+        android:layout_gravity="center" />
+
+
+    <EditText
+        android:id="@+id/postBookAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:hint="Author"
+        android:layout_gravity="center"
+        />
+
+
+    <EditText
+        android:id="@+id/postbookPrice"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:hint="Price"
+        android:layout_gravity="center" />
+
+    <Button
+        android:id="@+id/postBookButton"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:text="POST"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+</LinearLayout>
