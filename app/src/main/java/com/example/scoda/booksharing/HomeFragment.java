@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.CharArrayBuffer;
 import android.database.ContentObserver;
 import android.database.DataSetObserver;
@@ -27,13 +28,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +55,9 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     ArrayList<Book> tempbooks = new ArrayList<Book>();
     static HashMap<String, Integer> quantityMap;
     ListView booksListview;
+    public static final String Mypreferences = "MyPrefs";
+    SharedPreferences sharedPreferences;
+
 
     Cursor dbCursor;
     private static final String TAG = "com.example.scoda.booksharing.HomeFragment";
@@ -57,6 +65,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     BookDatabase bookDatabase;
     ArrayAdapter adapter;
     android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> callbacks;
+
 
     public HomeFragment() {
 
@@ -66,7 +75,72 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        sharedPreferences = getActivity().getSharedPreferences(Mypreferences,Context.MODE_PRIVATE);
+        int count = sharedPreferences.getInt("logincount",0);
 
+        Toast.makeText(getActivity(),String.valueOf(count),Toast.LENGTH_SHORT).show();
+        if(count == 3) {
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setView(R.layout.activity_rating);
+            final AlertDialog dialog = builder.create();
+
+            dialog.show();
+
+            final RatingBar mRatingBar = (RatingBar) dialog.findViewById(R.id.ratingbar);
+            final TextView mRatingScale = (TextView) dialog.findViewById(R.id.textView);
+            final EditText mFeedback = (EditText) dialog.findViewById(R.id.feedback);
+            final Button mSendFeedback = (Button) dialog.findViewById(R.id.btnSubmit);
+            final Button neglect = (Button) dialog.findViewById(R.id.later);
+            mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                @Override
+                public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                    mRatingScale.setText(String.valueOf(v));
+                    switch ((int) ratingBar.getRating()) {
+                        case 1:
+                            mRatingScale.setText("Very bad");
+                            break;
+                        case 2:
+                            mRatingScale.setText("Need some improvement");
+                            break;
+                        case 3:
+                            mRatingScale.setText("Good");
+                            break;
+                        case 4:
+                            mRatingScale.setText("Great");
+                            break;
+                        case 5:
+                            mRatingScale.setText("Awesome. I love it");
+                            break;
+                        default:
+                            mRatingScale.setText("");
+                    }
+                }
+            });
+            mSendFeedback.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mFeedback.getText().toString().isEmpty()) {
+                        Toast.makeText(getActivity(), "Please fill in feedback text box", Toast.LENGTH_LONG).show();
+                    } else {
+                        mFeedback.setText("");
+                        mRatingBar.setRating(0);
+                        Toast.makeText(getActivity(), "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
+                        // Intent intent2 = new Intent(rating.this, MainActivity.class);
+                        // startActivity(intent2);
+
+
+                    }
+                }
+            });
+            neglect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+        }
         Log.d(TAG,"onCreateView is called");
         final View view = inflater.inflate(R.layout.home_layout, container, false);
         Bundle bundle = this.getArguments();
@@ -281,6 +355,9 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         }
         return false;
     }
+
+
+
 
     public void doMySearch(String query) {
 
