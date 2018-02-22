@@ -3,11 +3,13 @@ package com.example.scoda.booksharing;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +22,13 @@ import android.widget.Toast;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Formatter;
 
 public class LoginFragment extends Fragment {
+
+    public static final String Mypreferences = "MyPrefs";
+    SharedPreferences sharedPreferences;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -72,8 +78,40 @@ public class LoginFragment extends Fragment {
                                 dbCursor.getString(dbCursor.getColumnIndex(UserDatabase.TableClass.EntryClass.USER_PASSWORD))
                                         .equals(passwordField.getText().toString())) {
                             dbCursor.close();
+
+                            sharedPreferences = getActivity().getSharedPreferences(Mypreferences,Context.MODE_PRIVATE);
+                            int count = sharedPreferences.getInt("logincount",0);
+                            long firstdate=sharedPreferences.getLong("firstlaunchdate",System.currentTimeMillis());
+                            long launchdate=sharedPreferences.getLong("lastlaunchdate",System.currentTimeMillis());
+                            int currdiff=(int)((System.currentTimeMillis()-launchdate)/(24*60*60*1000));
+                            int initdiff=(int)((System.currentTimeMillis()-firstdate)/(24*60*60*1000));
+
+                                    if(initdiff>1 && currdiff<=5 && count<3)
+                                    {
+                                        count++;
+                                        launchdate=System.currentTimeMillis();
+                                        Log.d("Count",String.valueOf(count));
+                                    }
+                                    else if(count>=3 || initdiff>5)
+                                    {
+                                        firstdate=System.currentTimeMillis();
+                                        launchdate=System.currentTimeMillis();
+                                        count=1;
+
+                                        Log.d("count value",String.valueOf(count));
+                                    }
+
+
+
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt("logincount",count);
+                            editor.putLong("lastlaunchdate",launchdate);
+                            editor.putLong("firstlaunchdate",firstdate);
+                            editor.commit();
+
+
                             ((MainActivity) getActivity()).gotoHomeFragment(emailField.getText().toString(),passwordField.getText().toString());
-                                break;
+
                         }
                     }while (dbCursor.moveToNext());
 
