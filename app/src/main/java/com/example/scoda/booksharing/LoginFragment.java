@@ -80,7 +80,7 @@ public class LoginFragment extends Fragment {
                             dbCursor.close();
 
                             sharedPreferences = getActivity().getSharedPreferences(Mypreferences,Context.MODE_PRIVATE);
-                            int count = sharedPreferences.getInt("logincount",0);
+                            int count = sharedPreferences.getInt("logincount",1);
                             long firstdate=sharedPreferences.getLong("firstlaunchdate",System.currentTimeMillis());
                             long launchdate=sharedPreferences.getLong("lastlaunchdate",System.currentTimeMillis());
                             int currdiff=(int)((System.currentTimeMillis()-launchdate)/(24*60*60*1000));
