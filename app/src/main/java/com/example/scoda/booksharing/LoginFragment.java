@@ -89,13 +89,13 @@ public class LoginFragment extends Fragment {
                                     if(initdiff>1 && currdiff<=5 && count<3)
                                     {
                                         count++;
-                                        launchdate=System.currentTimeMillis();
+                                       
                                         Log.d("Count",String.valueOf(count));
                                     }
                                     else if(count>=3 || initdiff>5)
                                     {
                                         firstdate=System.currentTimeMillis();
-                                        launchdate=System.currentTimeMillis();
+                                        
                                         count=1;
 
                                         Log.d("count value",String.valueOf(count));
@@ -105,7 +105,7 @@ public class LoginFragment extends Fragment {
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putInt("logincount",count);
-                            editor.putLong("lastlaunchdate",launchdate);
+                            editor.putLong("lastlaunchdate",System.currentTimeMillis());
                             editor.putLong("firstlaunchdate",firstdate);
                             editor.commit();
 
